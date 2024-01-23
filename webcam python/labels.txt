@@ -1,3 +1,3 @@
-0 Steelers
-1 Bills 
-2 Cheifs
+0 pit
+1 buf
+2 kc
