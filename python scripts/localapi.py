@@ -2,6 +2,19 @@ import requests
 from keras.models import load_model
 from PIL import Image, ImageOps
 import numpy as np
+import serial
+import argparse
+
+
+#Stuff to send to teh dirty duino 
+ser = serial.Serial('COM3', 9600, timeout=1)
+ser.flush()
+
+
+# Set up argument parser
+parser = argparse.ArgumentParser(description='Process image for team classification.')
+parser.add_argument('image_path', type=str, help='Path to the image file')
+args = parser.parse_args()
 
 # Function to fetch team information
 def get_team_info(class_name):
@@ -52,7 +65,7 @@ class_names = [line.strip() for line in open("labels.txt", "r").readlines()]
 
 # Prepare the image
 data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
-image = Image.open("buf.png").convert("RGB")
+image = Image.open(args.image_path).convert("RGB")
 size = (224, 224)
 image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
 image_array = np.asarray(image)
@@ -84,7 +97,10 @@ if class_name:
         if isinstance(team_data, dict):
             for key, value in team_data.items():
                 print(f"{key}: {value}")
+                data_str = f"{key}: {value}\n"
+                ser.write(data_str.encode('utf-8'))
         else:
             print(team_data)
+            ser.write(str(team_data).encode('utf-8'))
 else:
     print("No valid team class name found in prediction.")
