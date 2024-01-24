@@ -6,7 +6,7 @@ from keras.models import load_model
 import serial
 
 # Serial communication setup
-ser = serial.Serial('COM3', 9600, timeout=1)
+ser = serial.Serial('COM6', 9600, timeout=1)
 ser.flush()
 
 # Load the model and labels
@@ -91,7 +91,8 @@ while True:
     if cv2.waitKey(1) == 27: # Esc key
         break
         
-    time.sleep(1)
+    time.sleep(10)
+
 
 camera.release()
 cv2.destroyAllWindows()
